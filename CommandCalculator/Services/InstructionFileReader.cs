@@ -52,6 +52,11 @@ namespace CommandCalculator.Services
                 throw new Exception(string.Format(ExceptionMessages.ValidationMessageHeader, string.Join(Environment.NewLine, validationMessages)));
             }
 
+            if (result.Any() && result.Last().Action != InstructionActions.Apply)
+            {
+                throw new Exception(ExceptionMessages.FileMustContainApplyInstructionExceptionMessage);
+            }
+
             return result;
         }
     }

@@ -57,6 +57,16 @@ namespace CommandCalculator.Tests.Services
         }
 
         [Test]
+        public void ReadFileAsListOfInstructionsShouldThrowAnExceptionFileDoesNotContainApplyInstruction()
+        {
+            var testFilename = "testinstructionfiles/invalid_no_apply.txt";
+
+            var ex = Assert.Throws<Exception>(() => _sut.ReadFileAsListOfInstructions(testFilename));
+
+            ex.Message.Should().Be(ExceptionMessages.FileMustContainApplyInstructionExceptionMessage);
+        }
+
+        [Test]
         public void ReadFileAsListOfInstructionsShouldThrowAnExceptionWhenFileNotFound()
         {
             var testFilename = "testinstructionfiles/ddd.txt";
