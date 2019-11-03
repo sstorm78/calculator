@@ -2,9 +2,9 @@
 using System.Linq;
 using CommandCalculator.Models;
 
-namespace CommandCalculator.Services
+namespace CommandCalculator.Calculators
 {
-    public class CalculatorService : ICalculatorService
+    public class SimpleCalculator : ICalculator
     {
         public double Calculate(IList<Instruction> instructions)
         {

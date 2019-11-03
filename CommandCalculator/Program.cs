@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using CommandCalculator.Services;
+using CommandCalculator.Calculators;
+using CommandCalculator.Converters;
+using CommandCalculator.Readers;
+using CommandCalculator.UIPresenters;
 using CommandCalculator.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,13 +12,13 @@ namespace CommandCalculator
     public class Program
     {
         public static IServiceProvider ServiceProvider;
-        public static IConsoleWriter ConsoleWriter;
+        public static IUIPresenter ConsoleWriter;
 
         static void Main(string[] args)
         {
             ServiceProvider = RegisterServices();
             
-            ConsoleWriter = ServiceProvider.GetService<IConsoleWriter>();
+            ConsoleWriter = ServiceProvider.GetService<IUIPresenter>();
 
             DisplayIntro();
 
@@ -38,6 +41,7 @@ namespace CommandCalculator
 
                 ReadInstructions(input);
 
+                ConsoleWriter.WriteLine("");
                 ConsoleWriter.WriteLine("Enter a file name or exit");
             }
 
@@ -46,14 +50,17 @@ namespace CommandCalculator
 
         public static void ReadInstructions(string filename)
         {
-            var instructionFileReader = ServiceProvider.GetService<IInstructionFileReader>();
-            var calculatorService = ServiceProvider.GetService<ICalculatorService>();
+            var instructionFileReader = ServiceProvider.GetService<IInstructionConverter>();
+            var calculator = ServiceProvider.GetService<ICalculator>();
+            var reader = ServiceProvider.GetService<IReader>();
 
             try
             {
-                var instructions = instructionFileReader.ReadFileAsListOfInstructions(filename);
+                var rawFileContent = reader.ReadAsStringLines(filename);
 
-                var result = calculatorService.Calculate(instructions);
+                var instructions = instructionFileReader.ConvertIntoListOfInstructions(rawFileContent);
+
+                var result = calculator.Calculate(instructions);
 
                 ConsoleWriter.WriteLine(result.ToString(CultureInfo.InvariantCulture));
             }
@@ -76,10 +83,11 @@ namespace CommandCalculator
         private static ServiceProvider RegisterServices()
         {
             return new ServiceCollection()
-                .AddSingleton<IConsoleWriter, ConsoleWriter>()
-                .AddSingleton<IInstructionFileReader, InstructionFileReader>()
+                .AddSingleton<IUIPresenter, ConsolePresenter>()
+                .AddSingleton<IInstructionConverter, InstructionConverter>()
                 .AddSingleton<IInstructionValidator, InstructionValidator>()
-                .AddSingleton<ICalculatorService, CalculatorService>()
+                .AddSingleton<IReader, FileReader>()
+                .AddSingleton<ICalculator, SimpleCalculator>()
                 .BuildServiceProvider();
         }
 
@@ -89,9 +97,10 @@ namespace CommandCalculator
             {
                 return;
             }
-            if (ServiceProvider is IDisposable)
+
+            if (ServiceProvider is IDisposable disposable)
             {
-                ((IDisposable)ServiceProvider).Dispose();
+                disposable.Dispose();
             }
         }
     }

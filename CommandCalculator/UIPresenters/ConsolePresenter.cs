@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace CommandCalculator
+namespace CommandCalculator.UIPresenters
 {
     /// <summary>
     /// Delivers interaction results to the UI 
     /// </summary>
-    public class ConsoleWriter : IConsoleWriter
+    public class ConsolePresenter : IUIPresenter
     {
         public void WriteLine(string line)
         {

@@ -1,28 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using CommandCalculator.Models;
 using CommandCalculator.Validators;
 
-namespace CommandCalculator.Services
+namespace CommandCalculator.Converters
 {
-    public class InstructionFileReader : IInstructionFileReader
+    public class InstructionConverter : IInstructionConverter
     {
         private readonly IInstructionValidator _instructionValidator;
 
-        public InstructionFileReader(IInstructionValidator instructionValidator)
+        public InstructionConverter(
+            IInstructionValidator instructionValidator)
         {
             _instructionValidator = instructionValidator;
         }
 
-        public List<Instruction> ReadFileAsListOfInstructions(string filepath)
+        public List<Instruction> ConvertIntoListOfInstructions(string[] fileLines)
         {
             var result = new List<Instruction>();
             var validationMessages = new List<string>();
-            
-            var fileLines = File.ReadAllLines(filepath, Encoding.UTF8);
 
             if (fileLines == null || fileLines.Length == 0)
             {

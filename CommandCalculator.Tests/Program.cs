@@ -1,4 +1,7 @@
-﻿using CommandCalculator.Services;
+﻿using CommandCalculator.Calculators;
+using CommandCalculator.Converters;
+using CommandCalculator.Readers;
+using CommandCalculator.UIPresenters;
 using CommandCalculator.Validators;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -9,17 +12,18 @@ namespace CommandCalculator.Tests
     [TestFixture]
     public class Program
     {
-        private readonly Mock<IConsoleWriter> _consoleWriterMock;
+        private readonly Mock<IUIPresenter> _consoleWriterMock;
 
         public Program()
         {
-            _consoleWriterMock = new Mock<IConsoleWriter>();
+            _consoleWriterMock = new Mock<IUIPresenter>();
 
             var serviceProvider = new ServiceCollection()
                 .AddSingleton(_consoleWriterMock)
-                .AddSingleton<IInstructionFileReader, InstructionFileReader>()
+                .AddSingleton<IInstructionConverter, InstructionConverter>()
                 .AddSingleton<IInstructionValidator, InstructionValidator>()
-                .AddSingleton<ICalculatorService, CalculatorService>()
+                .AddSingleton<IReader, FileReader>()
+                .AddSingleton<ICalculator, SimpleCalculator>()
                 .BuildServiceProvider();
 
             CommandCalculator.Program.ServiceProvider = serviceProvider;

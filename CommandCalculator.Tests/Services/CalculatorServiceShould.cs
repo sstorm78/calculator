@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using CommandCalculator.Calculators;
 using CommandCalculator.Models;
-using CommandCalculator.Services;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -9,11 +9,11 @@ namespace CommandCalculator.Tests.Services
     [TestFixture]
     public class CalculatorServiceShould
     {
-        private readonly ICalculatorService _sut;
+        private readonly ICalculator _sut;
 
         public CalculatorServiceShould()
         {
-            _sut = new CalculatorService();
+            _sut = new SimpleCalculator();
         }
 
         [Test]

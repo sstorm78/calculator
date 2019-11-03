@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using CommandCalculator.Models;
 
-namespace CommandCalculator.Services
+namespace CommandCalculator.Calculators
 {
-    public interface ICalculatorService
+    public interface ICalculator
     {
         double Calculate(IList<Instruction> instructions);
     }
