@@ -50,7 +50,7 @@ namespace CommandCalculator
 
         public static void ReadInstructions(string filename)
         {
-            var instructionFileReader = ServiceProvider.GetService<IInstructionConverter>();
+            var converter = ServiceProvider.GetService<IInstructionConverter>();
             var calculator = ServiceProvider.GetService<ICalculator>();
             var reader = ServiceProvider.GetService<IReader>();
 
@@ -58,9 +58,9 @@ namespace CommandCalculator
             {
                 var rawFileContent = reader.ReadAsStringLines(filename);
 
-                var instructions = instructionFileReader.ConvertIntoListOfInstructions(rawFileContent);
+                var listOfinstructions = converter.ConvertIntoListOfInstructions(rawFileContent);
 
-                var result = calculator.Calculate(instructions);
+                var result = calculator.Calculate(listOfinstructions);
 
                 ConsoleWriter.WriteLine(result.ToString(CultureInfo.InvariantCulture));
             }
